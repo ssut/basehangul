@@ -8,3 +8,5 @@ python:
 install: python setup.py install
 before_script: pip install nose
 script: nosetests
+notifications:
+  email: false
