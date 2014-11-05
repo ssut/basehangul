@@ -1,0 +1,4 @@
+basehangul
+==========
+
+BaseHangul for Python
