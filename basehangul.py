@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+import array
 import sys
 import binascii
 
+PY3 = sys.version_info >= (3, 0)
 # padding character '흐'
-if sys.version_info >= (3, 0):
+if PY3:
     PADDING = chr(0xD750)
 else:
     PADDING = unichr(0xD750)
@@ -40,7 +42,7 @@ def decode(data):
     cut = -(size % 8 + 1)
     if cut != -1:
         binary = binary[0:cut]
-    return binascii.unhexlify('%x' % int(binary, 2))
+    return binascii.unhexlify('%x' % int(binary, 2)).decode('utf-8')
 
 def asc2bin(data):
     result = ''
@@ -61,18 +63,20 @@ def bin2hangul(index):
     if index < 0 or index > 1027:
         raise IndexError('Index {} outside of valid range: 0..1027'.format(
             index))
-    hangul = []
-    hx = hex(index / 0x5E * 0x100 + index % 0x5E + 0xB0A1)
+
+    hangul = array.array('B')
+    key = int(int(index / 0x5E) * 0x100 + index % 0x5E + 0xB0A1)
+    hx = hex(key)
     for i in range(2, len(hx) - 1, 2):
-        hangul.append(r'\x' + hx[i:i+2])
-    hangul = ''.join(hangul).decode('string-escape').decode('euc-kr')
+        hangul.append(int(hx[i:i+2], 16))
+    hangul = hangul.tostring().decode('euc-kr')
     return hangul
 
 def hangul2bin(hangul):
     if hangul == PADDING:
         return -1
-    offset = int(hangul.encode('euc-kr').encode('hex'), 16) - 0xB0A1
-    index = offset / 0x100 * 0x5E + offset % 0x100
+    offset = int(binascii.hexlify(hangul.encode('euc-kr')), 16) - 0xB0A1
+    index = int(offset / 0x100) * 0x5E + offset % 0x100
     if index < 0 or index > 1027:
         raise ValueError('Not a valid BaseHangul string')
     return index
