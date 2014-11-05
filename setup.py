@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup, find_packages
 
 setup(
     name='basehangul',
@@ -11,5 +8,5 @@ setup(
     author='SuHun Han',
     author_email='ssut@ssut.me',
     url='https://github.com/ssut/basehangul',
-    packages=setup.find_packages()
+    packages=find_packages()
 )
