@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import sys
 import binascii
 
 # padding character '흐'
-PADDING = unichr(0xD750)
+if sys.version_info >= (3, 0):
+    PADDING = chr(0xD750)
+else:
+    PADDING = unichr(0xD750)
 
 def encode(data):
     chunks = str2chunks(asc2bin(data), 10)
