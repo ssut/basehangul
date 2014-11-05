@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import binascii
 
 # padding character '흐'
 PADDING = unichr(0xD750)
@@ -18,8 +19,24 @@ def encode(data):
     result.append(padding)
     return ''.join(result)
 
-def decode():
-    pass
+def decode(data):
+    indexes = [hangul2bin(c) for c in data]
+    binaries = []
+    for index in indexes:
+        char = ''
+        if index == -1:
+            pass
+        elif 0 <= index <= 1023:
+            char = bin(index)[2:].zfill(10)
+        elif 1024 <= index <= 1027:
+            char = bin(index - 1024)[2:].zfill(2)
+        binaries.append(char)
+    binary = ''.join(binaries)
+    size = len(binary)
+    cut = -(size % 8 + 1)
+    if cut != -1:
+        binary = binary[0:cut]
+    return binascii.unhexlify('%x' % int(binary, 2))
 
 def asc2bin(data):
     result = ''
@@ -28,6 +45,7 @@ def asc2bin(data):
         char = format(ord(char), 'b').zfill(8)
         binaries.append(char)
     return ''.join(binaries)
+
 
 def str2chunks(data, size):
     if size <= 0:
@@ -39,11 +57,18 @@ def bin2hangul(index):
     if index < 0 or index > 1027:
         raise IndexError('Index {} outside of valid range: 0..1027'.format(
             index))
-
     hangul = []
     hx = hex(index / 0x5E * 0x100 + index % 0x5E + 0xB0A1)
     for i in range(2, len(hx) - 1, 2):
         hangul.append(r'\x' + hx[i:i+2])
     hangul = ''.join(hangul).decode('string-escape').decode('euc-kr')
-
     return hangul
+
+def hangul2bin(hangul):
+    if hangul == PADDING:
+        return -1
+    offset = int(hangul.encode('euc-kr').encode('hex'), 16) - 0xB0A1
+    index = offset / 0x100 * 0x5E + offset % 0x100
+    if index < 0 or index > 1027:
+        raise ValueError('Not a valid BaseHangul string')
+    return index

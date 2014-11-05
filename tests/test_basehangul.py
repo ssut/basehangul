@@ -18,7 +18,7 @@ class test_BaseHangul(unittest.TestCase):
         self.assertEqual(encoded, self.TEXT_ENCODED)
 
     def test_decode(self):
-        decoded = basehangul.encode(self.TEXT_ENCODED)
+        decoded = basehangul.decode(self.TEXT_ENCODED)
         self.assertEqual(decoded, self.TEXT_ORIGINAL)
 
 if __name__ == '__main__':
