@@ -13,6 +13,10 @@ class test_BaseHangul(unittest.TestCase):
     def setUp(self):
         pass
 
+    def test_empty(self):
+        encoded = basehangul.encode('')
+        self.assertEqual(encoded, '')
+
     def test_encode(self):
         encoded = basehangul.encode(self.TEXT_ORIGINAL)
         self.assertEqual(encoded, self.TEXT_ENCODED)

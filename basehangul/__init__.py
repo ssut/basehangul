@@ -11,6 +11,8 @@ else:
     PADDING = unichr(0xD750)
 
 def encode(data):
+    if len(data) == 0:
+        return ''
     chunks = str2chunks(asc2bin(data), 10)
     padding = ''
     last = chunks[-1]
