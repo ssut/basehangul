@@ -37,5 +37,17 @@ class test_BaseHangul(unittest.TestCase):
             decoded = basehangul.decode(dec)
             self.assertEqual(decoded, enc)
 
+    def test_multibyte(self):
+        ITEMS = (
+            ('가', u'가'),
+            ('가나', u'가나'),
+            ('가나다', u'가나다'),
+            ('가나다라', u'가나다라'),
+        )
+        for asc, uni in ITEMS:
+            encoded = basehangul.encode(asc)
+            decoded = basehangul.decode(encoded)
+            self.assertEqual(decoded, uni)
+
 if __name__ == '__main__':
     unittest.main()
