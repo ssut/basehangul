@@ -21,7 +21,7 @@ def encode(data):
         if size == 2:
             chunks[-1] = '1%s' % (last.rjust(10, '0'))
         elif size in (4, 6, 8):
-            padding = PADDING * (size / 2 - 1)
+            padding = PADDING * int(size / 2 - 1)
 
     result = [bin2hangul(int(b.ljust(10, '0'), 2)) for b in chunks]
     result.append(padding)
