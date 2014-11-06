@@ -33,14 +33,14 @@ def decode(data):
         if index == -1:
             pass
         elif 0 <= index <= 1023:
-            char = bin(index)[2:].zfill(10)
+            char = bin(index)[2:].rjust(10, '0')
         elif 1024 <= index <= 1027:
-            char = bin(index - 1024)[2:].zfill(2)
+            char = bin(index - 1024)[2:].rjust(2, '0')
         binaries.append(char)
     binary = ''.join(binaries)
     size = len(binary)
-    cut = -(size % 8 + 1)
-    if cut != -1:
+    cut = -(size % 8)
+    if cut != 0:
         binary = binary[0:cut]
     return binascii.unhexlify('%x' % int(binary, 2)).decode('utf-8')
 
