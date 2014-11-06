@@ -7,8 +7,18 @@ sys.path.append('..')
 import basehangul
 
 class test_BaseHangul(unittest.TestCase):
-    TEXT_ORIGINAL = 'This is an encoded string'
-    TEXT_ENCODED = u'넥라똔먈늴멥갯놓궂뗐밸뮤뉴뗐뀄굡덜멂똑뚤'
+    TEST_CASES = (
+        ('This is an encoded string', u'넥라똔먈늴멥갯놓궂뗐밸뮤뉴뗐뀄굡덜멂똑뚤'),
+        ('123ab', u'꺽먹꼍녜'),
+        ('123d\x00', u'꺽먹꼐가'),
+        ('1', u'꺽흐흐흐'),
+        ('12', u'꺽먈흐흐'),
+        ('123', u'꺽먹꺄흐'),
+        ('123d', u'꺽먹꼐빎'),
+        ('123e', u'꺽먹꼐빔'),
+        ('123f', u'꺽먹꼐빕'),
+        ('123g', u'꺽먹꼐빗'),
+    )
 
     def setUp(self):
         pass
@@ -18,12 +28,14 @@ class test_BaseHangul(unittest.TestCase):
         self.assertEqual(encoded, '')
 
     def test_encode(self):
-        encoded = basehangul.encode(self.TEXT_ORIGINAL)
-        self.assertEqual(encoded, self.TEXT_ENCODED)
+        for enc, dec in self.TEST_CASES:
+            encoded = basehangul.encode(enc)
+            self.assertEqual(encoded, dec)
 
     def test_decode(self):
-        decoded = basehangul.decode(self.TEXT_ENCODED)
-        self.assertEqual(decoded, self.TEXT_ORIGINAL)
+        for enc, dec in self.TEST_CASES:
+            decoded = basehangul.decode(dec)
+            self.assertEqual(decoded, enc)
 
 if __name__ == '__main__':
     unittest.main()
