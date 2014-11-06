@@ -22,7 +22,6 @@ def encode(data):
             chunks[-1] = '1%s' % (last.rjust(10, '0'))
         elif size in (4, 6, 8):
             padding = PADDING * int(size / 2 - 1)
-
     result = [bin2hangul(int(b.ljust(10, '0'), 2)) for b in chunks]
     result.append(padding)
     return ''.join(result)
@@ -44,15 +43,19 @@ def decode(data):
     cut = -(size % 8)
     if cut != 0:
         binary = binary[0:cut]
-    return binascii.unhexlify('%x' % int(binary, 2)).decode('utf-8')
+    dec = binascii.unhexlify('%x' % int(binary, 2))
+    dec = dec.decode('utf-8')
+    return dec
 
 def asc2bin(data):
     result = ''
-    binaries = []
-    for char in data:
-        char = format(ord(char), 'b').zfill(8)
-        binaries.append(char)
-    return ''.join(binaries)
+    if PY3:
+        first = bin(int.from_bytes(data[0].encode(), 'big'))
+        fix = first[2:].zfill(8)
+        result = bin(int.from_bytes(data.encode(), 'big')).replace(first, fix)
+    else:
+        result = bin(int('1' + binascii.hexlify(data), 16))[3:]
+    return result
 
 
 def str2chunks(data, size):

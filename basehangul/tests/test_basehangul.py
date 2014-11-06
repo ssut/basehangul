@@ -6,6 +6,7 @@ import unittest
 sys.path.append('..')
 import basehangul
 
+PY3 = sys.version_info >= (3, 0)
 class test_BaseHangul(unittest.TestCase):
     TEST_CASES = (
         ('This is an encoded string', u'넥라똔먈늴멥갯놓궂뗐밸뮤뉴뗐뀄굡덜멂똑뚤'),
